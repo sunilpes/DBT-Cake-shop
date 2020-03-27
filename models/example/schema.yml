@@ -1,0 +1,129 @@
+
+version: 2
+
+models:
+  - name: total_order_by_customer
+    description: Table contains total no. of orders placed by each cusotmer
+
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - relationships:
+              to: source('dbt_cake_shop', 'customers')
+              field: id
+
+      - name: first_name
+        tests:
+          - not_null
+
+      - name: last_name
+        tests:
+          - not_null
+
+      - name: orders_placed
+
+  - name: fct_orders
+    description: This table has basic information about orders, as well as some derived facts based on payments
+
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+        description: This is a unique identifier for an order
+
+      - name: customer_id
+        description: Foreign key to the customers table
+        tests:
+          - not_null
+          - relationships:
+              to: source('dbt_cake_shop', 'customers')
+              field: id
+
+      - name: order_date
+        description: Date (UTC) that the order was placed
+
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['placed', 'shipped', 'completed', 'return_pending', 'returned']
+
+      - name: amount
+        description: Total amount of the order
+        tests:
+          - not_null
+
+      - name: credit_card_amount
+        description: Amount of the order paid for by credit card
+        tests:
+          - not_null
+
+      - name: coupon_amount
+        description: Amount of the order paid for by coupon
+        tests:
+          - not_null
+
+      - name: bank_transfer_amount
+        description: Amount of the order paid for by bank transfer
+        tests:
+          - not_null
+
+      - name: gift_card_amount
+        description: Amount of the order paid for by gift card
+        tests:
+          - not_null                  
+
+sources:
+  - name: dbt_cake_shop #dataset name
+    tables:
+      - name: customers # table name
+        columns:
+          - name: id
+            tests:
+              - unique
+          - name: first_name
+            tests:
+              - not_null
+          - name: last_name
+          - name: email
+            tests:
+              - unique
+              - not_null   
+
+      - name: orders
+        columns:
+          - name: id
+            tests:
+              - unique
+          - name: user_id
+            tests:
+              - relationships:
+                  to: source('dbt_cake_shop', 'customers')
+                  field: id
+          - name: order_date
+            tests:
+              - not_null
+          - name: status
+            tests:
+              - accepted_values:
+                  values: ['placed', 'shipped', 'completed', 'return_pending', 'returned']
+
+      - name: payments
+        columns:
+          - name: id
+            tests:
+              - unique
+          - name: order_id
+            tests:
+              - relationships:
+                  to: source('dbt_cake_shop', 'orders')
+                  field: id
+          - name: payment_method
+            tests:
+              - accepted_values:
+                  values: ['credit_card', 'coupon', 'bank_transfer', 'gift_card'] 
+          - name: amount
+            tests:
+              - not_null                 
+
