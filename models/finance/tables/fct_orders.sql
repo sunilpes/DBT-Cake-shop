@@ -2,8 +2,8 @@
   config(
     materialized = "table",
     post_hook=[
-    "CREATE TABLE IF NOT EXISTS {{this.schema}}.audit (total_records INT64, created_on TIMESTAMP, schema STRING, model STRING)",
-    "insert into {{this.schema}}.audit (total_records, created_on, schema, model) select count(*) as total_records, current_timestamp() as created_on, \"{{this.schema}}\" as schema, \"{{this.name}}\" as model from {{ this }} "
+        "CREATE TABLE IF NOT EXISTS {{this.schema}}.audit (total_records INT64, created_on TIMESTAMP, schema STRING, model STRING)",
+        "INSERT into {{this.schema}}.audit (total_records, created_on, schema, model) select count(*) as total_records, current_timestamp() as created_on, \"{{this.schema}}\" as schema, \"{{this.name}}\" as model from {{ this }} "
     ]
   )
 }}
@@ -45,3 +45,8 @@ final as (
 )
 
 select * from final
+
+
+
+
+
