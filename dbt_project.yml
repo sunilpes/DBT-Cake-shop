@@ -31,4 +31,25 @@ clean-targets:         # directories to be removed by `dbt clean`
 # In this example config, we tell dbt to build all models in the example/ directory
 # as tables. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
-    
+# models:
+#   enabled: true    # configs defined here are applied to _all_ packages
+#   materialized: view   # but can be overridden in more specific configs below
+#   # pre- and post- hooks can be defined anywhere within the model hierarchy.
+#   # when defined at the root level (as they are here), they apply to all models
+#   # in all packages. These hooks are compiled into the model SQL and run either
+#   # before or after the model is materializated.
+#   pre-hook:
+#     - "insert into audit (model, state, time) values ('{{ this.name }}', 'start', getdate())"
+#   post-hook:
+#     - "grant select on {{this}} to user_1"
+#     - "insert into audit (model, state, time) values ('{{ this.name }}', 'end', getdate())"
+#   # This is the configuration for the models in your local package. The value
+#   # for the `name` key (defined above) should be used here
+#   dbt_cake_shop:
+#     # Applies to all SQL files found under ./models/finance/
+#     finance:
+#       enabled: false
+#       # Applies to the specific model ./models/finance/fct_orders.sql
+#       fct_orders:
+#         enabled: true
+#         materialized: table    

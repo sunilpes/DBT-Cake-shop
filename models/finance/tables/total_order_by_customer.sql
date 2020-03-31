@@ -2,6 +2,7 @@
   config(materialized = "table", sort="orders_placed")
 }}
 
+# Jinja2 - Python Library
 
 with customers as (
 	select id as customer_id, last_name, first_name, email  from {{ source('dbt_cake_shop', 'customers') }}

@@ -3,7 +3,7 @@
 with assertion as (select table_name,
 	dw_partition_date, 
 	sum(sdmcount) sdmcount,
-	sum( cdmcount) cdmcount, 
+	sum(cdmcount) cdmcount, 
 	sum(sdmcount) - sum(cdmcount) difference, 
 	current_datetime('Australia/Sydney') execdatetime 
 from 

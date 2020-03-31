@@ -3,7 +3,7 @@ version: 2
 
 models:
   - name: total_order_by_customer
-    description: Table contains total no. of orders placed by each cusotmer
+    description: Table contains order records by each customer with status "placed"
 
     columns:
       - name: customer_id
@@ -72,7 +72,26 @@ models:
       - name: gift_card_amount
         description: Amount of the order paid for by gift card
         tests:
-          - not_null                  
+          - not_null
+          
+  - name: order_by_date
+    description: order table partitioned by date
+    columns:
+      - name: id
+        tests:
+          - unique
+      - name: user_id
+        tests:
+          - relationships:
+              to: source('dbt_cake_shop', 'customers')
+              field: id
+      - name: order_date
+        tests:
+          - not_null
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['placed', 'shipped', 'completed', 'return_pending', 'returned']                       
 
 sources:
   - name: dbt_cake_shop #dataset name
